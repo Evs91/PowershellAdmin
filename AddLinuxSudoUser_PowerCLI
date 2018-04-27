@@ -1,0 +1,19 @@
+##WORKS ON BASH
+$vCenterCreds = (Get-Credential)
+$vCenter = ""
+$VMUsername = ""
+$VMPassword = ""
+$VMNameStartsWith = "*"
+
+$script = @'
+useradd username
+usermod -aG wheel username
+echo "username:password" | chpasswd
+'@
+
+
+Connect-VIServer -Server $vCenter -Credential $vCenterCreds
+
+get-vm -Name $VMNameStartsWith | ForEach-Object {
+	Invoke-VMScript -VM $VMNameStartsWith -ScriptType bash -ScriptText $script -GuestUser $VMUsername -GuestPassword $VMPassword
+	}
